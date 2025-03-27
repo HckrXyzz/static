@@ -946,6 +946,7 @@
 
         async function mobileAdd() {
             const addResponse = await fetch(`${baseUrl}/api/mobile/contact/add`, {
+             const newMobile = localStorage.getItem('newMobile');
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -953,7 +954,7 @@
                 },
                 body: JSON.stringify({
                     "verification_code": "",
-                    "mobile": "1611600400",
+                    "mobile": newMobile,
                     "required_only_primary_verified": true
                 }),
             });

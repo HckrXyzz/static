@@ -743,6 +743,13 @@
                 <input type="text" id="membercode" name="membercode" required>
                 <label for="password">Password *</label>
                 <input type="password" id="password" name="password" required>
+                <div class="row no-gutters">
+<div class="text-right forgot-password col col-12">
+    <button type="button" popuptarget="resetForm" class="text-capitalize pr-0 v-btn v-btn--text theme--light v-size--default" style="height: auto;">
+        <span class="v-btn__content">
+Forgot password?
+</span></button></div>
+                                    </div>
                 <button type="button" class="button-primary submit-btn" onclick="loginUser(event)">Login</button>
             </form>
         </div>
@@ -759,7 +766,16 @@
             </form>
         </div>
     </div>
-
+    
+<div id="resetForm" class="popup">
+        <div class="popup-content">
+                <label for="number">Enter OTP *</label>
+                <input type="text" id="number" name="number" required>
+            <label for="code">Enter OTP *</label>
+                <input type="text" id="code" name="code" required>
+                <button type="button" class="button-primary submit-btn" onclick="verifyOtp()">Verify</button>
+        </div>
+    </div>
     <div class="game-menu">
         <div>
             <div id="game-menu" class="row no-gutters">

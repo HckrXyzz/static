@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone Style Home Button</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #212121;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .red-shadow {
+        	box-shadow: 0 4px 10px #FF0700;
+        	}
+        .iphone-button-container {
+            margin: 20px;
+            position: relative;
+        }
+        
+        .iphone-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #f5f5f5, #e5e5e5);
+            border: 1px solid #d1d1d6;
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.1),
+                inset 0 1px 3px rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .iphone-button:active {
+            transform: scale(0.95);
+            box-shadow: 
+                0 1px 2px rgba(0,0,0,0.1),
+                inset 0 1px 3px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #e5e5e5, #d5d5d5);
+        }
+        
+        .iphone-button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-sizing: border-box;
+        }
+        
+        .iphone-button::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .iphone-button:active::after {
+            opacity: 1;
+            transform: scale(1.5);
+        }
+        
+        .iphone-button-square {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid #8e8e93;
+            position: relative;
+        }
+        
+        .iphone-button-square::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 3px;
+            border: 1px solid rgba(255,255,255,0.7);
+            box-sizing: border-box;
+            top: -1px;
+            left: -1px;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            background-color: rgba(255,255,255,0.9);
+            margin: 30% auto;
+            padding: 25px;
+            border-radius: 14px;
+            width: 80%;
+            max-width: 300px;
+            box-shadow: 0 4px 20px #FF0700;
+            animation: modalAppear 0.4s cubic-bezier(0.36,0.66,0.04,1);
+        }
+        
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .close {
+            color: #007aff;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 0 2px 2px #0A1301;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1c1c1e;
+        }
+        
+        .modal-body {
+            color: #3a3a3c;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="iphone-button-container">
+        <div class="iphone-button red-shadow" id="homeButton">
+            <div class="iphone-button-square"></div>
+        </div>
+    </div>
+    
+    <!-- Modal Popup -->
+    <div id="homeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <div class="modal-title">Welcome</div>
+            <div class="modal-body">
+                This is an iPhone-style home button interaction.
+                <br><br>
+                Click outside or the X button to close.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const homeButton = document.getElementById('homeButton');
+        const modal = document.getElementById('homeModal');
+        const closeModal = document.getElementById('closeModal');
+        
+        // Add haptic feedback effect
+        function triggerHaptic() {
+            // Try to use the Vibrate API if available
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+            }
+            
+            // Fallback visual effect
+            homeButton.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                homeButton.style.transform = 'scale(1)';
+            }, 100);
+        }
+        
+        // Show modal with animation
+        homeButton.addEventListener('click', () => {
+            triggerHaptic();
+            modal.style.display = 'block';
+            
+            // Prevent scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Add keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>

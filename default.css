@@ -1,0 +1,299 @@
+/*
+ * ONMO Pay
+ */
+
+:root {
+  --main-page-bg-color: rgba(33,37,41,1);
+  --logo-container-bg-color: rgba(33,37,41,1);
+  --banner-accents-color: rgba(33,37,41,1);
+  --text-color: #fff;
+  --operator-primry-color: #5B1F69;
+  --operator-secondary-color: #4a1257;
+  --operator-links: #7D458A;
+  --font-family-regular: 'Roboto Regular';
+  --font-family-bold: 'Roboto Bold';
+  --font-family-medium: 'Roboto Bold';
+  --enternumber-countrycode-display: flex;
+  --bs-btn-disabled-bg: grey !important;
+}
+
+@font-face {
+  font-family: 'Roboto Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Roboto Regular'), url('fonts/Roboto-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Roboto Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Roboto Bold'), url('fonts/Roboto-Bold.woff') format('woff');
+}
+
+body {
+  font-family: var(--font-family-regular);
+  background-color: var(--main-page-bg-color) !important;
+}
+
+header{
+  background-color: var(--logo-container-bg-color) !important;
+}
+
+h1,
+h2 {
+  font-family: var(--font-family-bold);
+  animation: bounce;
+  animation-duration: 1s;
+}
+
+body:not(.focus-visible) :focus:not(.focus-visible) {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+a {
+  text-decoration: underline;
+  color: #fff;
+}
+
+p {
+  margin: 0px;
+  line-height: normal;
+}
+
+.bg-operator {
+  background-color: var(--operator-primry-color);
+}
+
+.text-operator {
+  color: var(--operator-primry-color);
+}
+
+.text-alt {
+  color: #AAAAAA;
+}
+
+.progress {
+  background-color: rgba(255, 255, 255, .3);
+  border-radius: 30px;
+  height: 10px;
+}
+
+.left-navigation {
+  position: absolute;
+  left: 10px;
+  top: 12px;
+}
+
+.switchdata-box p {
+  line-height: normal;
+  font-size: 14px;
+}
+
+.switchdata-box img {
+  width: 60px;
+}
+
+.resend-link {
+  text-decoration: underline;
+  color: var(--operator-links);
+}
+
+.cover-container {
+  max-width: 42em;
+  position: relative;
+}
+
+.hero-bottom-logo {
+  position: absolute;
+  left: 5%;
+  bottom: 7%;
+  width: 20%;
+}
+
+.btn-primary {
+  background-color: var(--operator-primry-color);
+  border-color: var(--operator-primry-color);
+}
+
+.btn-green {
+  background-color: #9DC740;
+  border-color: #9DC740;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--operator-secondary-color);
+  border-color: var(--operator-secondary-color);
+}
+
+.btn-check:checked+.btn,
+.btn.active,
+.btn.show,
+.btn:first-child:active,
+:not(.btn-check)+.btn:active {
+  background-color: var(--operator-secondary-color);
+  border-color: var(--operator-secondary-color);
+}
+
+.btn-primary:disabled {
+  background-color: var(--operator-secondary-color);
+  border-color: var(--operator-secondary-color);
+  color: #fff;
+  opacity: 0.3;
+}
+
+.input-group-text {
+  border: none;
+  font-family: var(--font-family-bold);
+  color: #9c9c9c;
+}
+
+.input-group-lg>.btn,
+.input-group-lg>.form-control,
+.input-group-lg>.form-select,
+.input-group-lg>.input-group-text {
+  padding: 0.25rem 0.5rem;
+}
+
+.input-group-flag img {
+  height: 20px;
+}
+
+.form-control-lg {
+  font-family: var(--font-family-bold);
+  color: #9c9c9c;
+  font-size: 1.25rem;
+}
+
+.form-control-lg::placeholder {
+  color: #9c9c9c;
+}
+
+.form-control:focus {
+  color: #9c9c9c;
+}
+
+.btn {
+  font-family: var(--font-family-bold);
+  font-size: 22px;
+  letter-spacing: 0.5px;
+}
+
+footer {
+  line-height: normal;
+}
+
+.spinner-custom {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.onmo-coins img {
+  width: 120px;
+  padding: 10px;
+}
+
+.card {
+  border: none;
+  background-color: var(--operator-primry-color);
+  border-radius: 20px;
+}
+
+.card-header {
+  border: none;
+  font-family: var(--font-family-bold);
+  font-size: 1.5rem;
+}
+
+.card-title {
+  border: none;
+  color: rgba(255, 255, 255, .5);
+}
+
+.card-text {
+  font-family: var(--font-family-bold);
+  font-size: 2rem;
+  color: #fff;
+}
+
+.h-60 {
+  height: 60% !important;
+}
+
+.rounded-top-50 {
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  border-bottom-left-radius: 0rem;
+  border-bottom-right-radius: 0rem;
+}
+
+.pulsate-bck {
+  -webkit-animation: pulsate-bck 0.5s ease-in-out 3 both;
+  animation: pulsate-bck 0.5s ease-in-out 3 both;
+}
+
+@-webkit-keyframes pulsate-bck {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  50% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes pulsate-bck {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  50% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+/* Custom Styles */
+
+.subscription_card {
+  cursor: pointer;
+}
+
+.country-code-group {
+  display: var(--enternumber-countrycode-display);
+}
+
+.hero-banner{
+  background-color: var(--banner-accents-color) !important;
+}
+.message_INCORRECT_OTP{
+  display:none;
+}
+.text-secondary{
+  color: white !important;
+}
+.disabled{
+  background-color:grey !important;
+  border-color:grey !important;
+}
+.px-4{
+  color: #fff;
+}
+.hidden{
+  display: none !important;
+}

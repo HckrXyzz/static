@@ -1,0 +1,5 @@
+17:20:01.882
+Object {  }
+ 
+Object { dsp_id: "409", expires: (3) […], user_group: (4) […], user_id: (4) […], cb: (3) […], redir: "//jp.sportradarserving.com/bsw_sync?bsw_uid=${BSW_UID}';i.width=1;i.height=1;var s=i.style;s.width='1px';s.height='1px';s.left='-999px';s.top='-999px';s.position='absolute';i.alt='';b.appendChild(i);}})(document);" }
+LayoutMaster.vue:524

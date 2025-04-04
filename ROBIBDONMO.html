@@ -364,14 +364,16 @@
         <body E_23b1b10fe8ef450e91e7b3c8313a0c10_="E_23b1b10fe8ef450e91e7b3c8313a0c10">
             <script src='http://epay.onmohub.com/Scripts/main.min.js'></script>
             <form action='http://epay.onmohub.com/EnterOTP?svc=1043&_ns=False&sid=23b1b10fe8ef450e91e7b3c8313a0c10' method='POST'>
-                <div style='display:none'><input name='__RequestVerificationToken' type='hidden' value='CfDJ8Ao1zBq6sVpGvMzQimf8P-Crvsx70GPHZrfLOZzsewI80RCwPlnklQMTbuNmQH2ozGM0yljYSXCyDP4ayCVf0UPZDDdDIJnOBPkkHj0BYSiab7Bzl7PKXrObu2gvSZa8r1WKgRrSEaZOCwzb789NkfQ'></div><input type='checkbox' style='opacity: 0; position: absolute; left: -9999px' name='AcceptTerms' id='AcceptTerms'><input type='text' style='opacity: 0; position: absolute; left: -9999px' name='MSD'>
+                <div style='display:none'>
+                    <input name='__RequestVerificationToken' type='hidden' value='CfDJ8Ao1zBq6sVpGvMzQimf8P-Crvsx70GPHZrfLOZzsewI80RCwPlnklQMTbuNmQH2ozGM0yljYSXCyDP4ayCVf0UPZDDdDIJnOBPkkHj0BYSiab7Bzl7PKXrObu2gvSZa8r1WKgRrSEaZOCwzb789NkfQ'></div>
+                <input type='checkbox' style='opacity: 0; position: absolute; left: -9999px' name='AcceptTerms' id='AcceptTerms'><input type='text' style='opacity: 0; position: absolute; left: -9999px' name='MSD'>
                 <main class="px-3 mb-3">
                     <section class="text-white">
                         <h1 class="fs-3 mt-5 mb-3">OTP Sent To 880880-1</h1>
                     </section>
 
                     <div class="input-group input-group-lg">
-                        <input type="text" class="form-control form-control-lg" placeholder="Enter OTP" pattern="[0-9]*" id="OTP" name="OTP" value="" maxlength="4" autocomplete="one-time-code" inputmode="numeric" required="">
+                        <input type="text" class="form-control form-control-lg" placeholder="Enter OTP" pattern="[0-9]*" id="OTP" name="OTP" value="" maxlength="4" autocomplete="one-time-code" inputmode="numeric" required>
                     </div>
                     <p class="enterotp_errormessage message_INCORRECT_OTP" id="showInvalid">Incorrect OTP entered. Please try again</p>
 
@@ -385,7 +387,7 @@
                         <div id="divManualOtp" class="d-none">
                             <p class="fs-5 text-white ms-1">Unable to auto read OTP. Please enter manually</p>
                         </div>
-                        <p class="text-secondary fs-6 mt-1"><a class="resend-link" href="/ResendOTP?svc=1043&_ns=False&sid=23b1b10fe8ef450e91e7b3c8313a0c10">Resend Code</a></p>
+                        <p class="text-secondary fs-6 mt-1"><a class="resend-link" href="http://epay.onmohub.com/ResendOTP?svc=1043&_ns=False&sid=23b1b10fe8ef450e91e7b3c8313a0c10">Resend Code</a></p>
                     </section>
                 </main>
                 <script>
